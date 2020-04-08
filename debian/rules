@@ -1,0 +1,40 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+# Uncomment this to turn on verbose mode.
+# export DH_VERBOSE=1
+
+export HOME=/tmp
+
+%:
+	dh $@ --with bash-completion
+
+override_dh_auto_build:
+ifeq (,$(filter nodoc,$(DEB_BUILD_PROFILES)))
+	prefix=/usr make mandocs
+endif
+
+override_dh_fixperms:
+	dh_fixperms
+	chmod a-x debian/npm/usr/share/npm/lib/utils/completion.sh
+	chmod a-x debian/npm/usr/share/npm/node_modules/npm-lifecycle/node-gyp-bin/node-gyp.cmd
+	chmod a+x debian/npm/usr/share/npm/bin/npm-cli.js
+	chmod a+x debian/npm/usr/share/npm/bin/npx-cli.js
+
+override_dh_auto_clean:
+
+override_dh_auto_install:
+	# NO OP
+
+override_dh_install:
+	dh_install
+	find debian/npm -iname 'LICENSE*' -delete
+	find debian/npm -iname '.gitignore' -delete
+	find debian/npm/usr/share/npm/node_modules -name .npmignore -delete
+	find debian/npm/usr/share/npm/node_modules -name '.eslintrc*' -delete
+	find debian/npm/usr/share/npm/node_modules -name '*.md' -delete
+	find debian/npm/usr/share/npm/node_modules -name '*.hbs' -delete
+	rm -rf debian/npm/usr/share/npm/node_modules/*/.git*
+
+override_dh_auto_test:
+	# Test are lauched only during autopkgtest

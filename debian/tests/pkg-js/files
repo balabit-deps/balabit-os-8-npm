@@ -1,0 +1,4 @@
+debian/tests/test_modules
+debian/tests/tests_excluded
+docs
+test

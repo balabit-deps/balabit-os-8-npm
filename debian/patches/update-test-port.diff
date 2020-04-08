@@ -1,0 +1,16 @@
+Description: update test port to avoid debci failures
+Author: Xavier Guimard <yadd@debian.org>
+Forwarded: not-needed
+Last-Update: 2020-03-15
+
+--- a/test/common-tap.js
++++ b/test/common-tap.js
+@@ -87,7 +87,7 @@
+   })
+ })
+ 
+-var port = exports.port = 15443 + testId
++var port = exports.port = 56443 + testId
+ exports.registry = 'http://localhost:' + port
+ 
+ exports.altPort = 7331 + testId

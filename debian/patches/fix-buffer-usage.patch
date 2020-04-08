@@ -1,0 +1,98 @@
+Description: Replace Buffer() by Buffer.from() or Buffer.alloc()
+Author: Xavier Guimard <yadd@debian.org>
+Forwarded: no
+Last-Update: 2020-03-03
+
+--- a/node_modules/byline/lib/byline.js
++++ b/node_modules/byline/lib/byline.js
+@@ -143,13 +143,13 @@
+ // see Readable::push
+ LineStream.prototype._reencode = function(line, chunkEncoding) {
+   if (this.encoding && this.encoding != chunkEncoding) {
+-    return new Buffer(line, chunkEncoding).toString(this.encoding);
++    return new Buffer.from(line, chunkEncoding).toString(this.encoding);
+   }
+   else if (this.encoding) {
+     // this should be the most common case, i.e. we're using an encoded source stream
+     return line;
+   }
+   else {
+-    return new Buffer(line, chunkEncoding);
++    return new Buffer.from(line, chunkEncoding);
+   }
+ };
+--- a/node_modules/dotenv/README.md
++++ b/node_modules/dotenv/README.md
+@@ -113,7 +113,7 @@
+ 
+ ```js
+ const dotenv = require('dotenv')
+-const buf = new Buffer('BASIC=basic')
++const buf = new Buffer.from('BASIC=basic')
+ const config = dotenv.parse(buf) // will return an object
+ console.log(typeof config, config) // object { BASIC : 'basic' }
+ ```
+--- a/node_modules/fs-minipass/index.js
++++ b/node_modules/fs-minipass/index.js
+@@ -268,7 +268,7 @@
+ 
+   write (buf, enc) {
+     if (typeof buf === 'string')
+-      buf = new Buffer(buf, enc)
++      buf = new Buffer.from(buf, enc)
+ 
+     if (this[_ended]) {
+       this.emit('error', new Error('write() after end()'))
+--- a/node_modules/socks-proxy-agent/node_modules/agent-base/test/test.js
++++ b/node_modules/socks-proxy-agent/node_modules/agent-base/test/test.js
+@@ -199,7 +199,7 @@
+       // doesn't *actually* attach the listeners to the "stream" until
+       // this happens
+       req.once('socket', function() {
+-        var buf = new Buffer(
++        var buf = new Buffer.from(
+           'HTTP/0.9 111\r\n' +
+             'Foo: bar\r\n' +
+             'Set-Cookie: 1\r\n' +
+--- a/node_modules/sorted-union-stream/node_modules/readable-stream/lib/_stream_readable.js
++++ b/node_modules/sorted-union-stream/node_modules/readable-stream/lib/_stream_readable.js
+@@ -154,7 +154,7 @@
+   if (util.isString(chunk) && !state.objectMode) {
+     encoding = encoding || state.defaultEncoding;
+     if (encoding !== state.encoding) {
+-      chunk = new Buffer(chunk, encoding);
++      chunk = new Buffer.from(chunk, encoding);
+       encoding = '';
+     }
+   }
+@@ -891,7 +891,7 @@
+       if (stringMode)
+         ret = '';
+       else
+-        ret = new Buffer(n);
++        ret = new Buffer.alloc(n);
+ 
+       var c = 0;
+       for (var i = 0, l = list.length; i < l && c < n; i++) {
+--- a/node_modules/sorted-union-stream/node_modules/readable-stream/lib/_stream_writable.js
++++ b/node_modules/sorted-union-stream/node_modules/readable-stream/lib/_stream_writable.js
+@@ -239,7 +239,7 @@
+   if (!state.objectMode &&
+       state.decodeStrings !== false &&
+       util.isString(chunk)) {
+-    chunk = new Buffer(chunk, encoding);
++    chunk = new Buffer.from(chunk, encoding);
+   }
+   return chunk;
+ }
+--- a/node_modules/sorted-union-stream/node_modules/string_decoder/index.js
++++ b/node_modules/sorted-union-stream/node_modules/string_decoder/index.js
+@@ -70,7 +70,7 @@
+ 
+   // Enough space to store all bytes of a single character. UTF-8 needs 4
+   // bytes, but CESU-8 may require up to 6 (3 bytes per surrogate).
+-  this.charBuffer = new Buffer(6);
++  this.charBuffer = new Buffer.alloc(6);
+   // Number of bytes received for the current incomplete multi-byte character.
+   this.charReceived = 0;
+   // Number of bytes expected for the current incomplete multi-byte character.

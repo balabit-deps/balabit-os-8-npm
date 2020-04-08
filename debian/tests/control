@@ -1,0 +1,13 @@
+Test-Command: /usr/share/pkg-js-autopkgtest/runner require
+Depends: @, nodejs, pkg-js-autopkgtest
+Restrictions: superficial
+Features: test-name=pkg-js-autopkgtest-require
+
+Test-Command: /usr/share/pkg-js-autopkgtest/runner
+Depends: @, @builddeps@, pkg-js-autopkgtest, git
+Restrictions: allow-stderr, skippable, flaky
+Features: test-name=pkg-js-autopkgtest
+
+Tests: install-test
+Depends: @
+Restrictions: allow-stderr
